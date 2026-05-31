@@ -517,7 +517,7 @@
                 const fechaFormateada = new Date(r.fecha).toLocaleDateString('es-CO', {
                     weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit'
                 });
- 
+
                 const item = document.createElement('div');
                 item.className = 'item-registro';
                 item.innerHTML = `

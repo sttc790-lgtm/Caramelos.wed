@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Producción - Caramelos de Jengibre</title>
+    <style>
+        :root {
+            --bg-principal: #0d0e12;
+            --bg-tarjeta: #1a1c23;
+            --texto: #f3f4f6;
+            --texto-secundario: #9ca3af;
+            --neon-azul: #00f2fe;
+            --neon-verde: #39ff14;
+            --neon-rojo: #ff007f;
+            --borde: #2a2e3d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto);
+            padding: 15px;
+            padding-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-azul), 0 0 20px var(--neon-azul);
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 0 0 5px var(--neon-azul);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contenedor {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tarjeta {
+            background: var(--bg-tarjeta);
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .resplandor-verde { border-color: var(--neon-verde); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+        .resplandor-azul { border-color: var(--neon-azul); box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
+
+        .grupo-form {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--texto-secundario);
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #252836;
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-azul);
+            box-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+        }
+
+        .grid-simulacion {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .col-simulacion {
+            background: #222531;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            border: 1px solid #2a2e3d;
+        }
+
+        .col-simulacion p span {
+            display: block;
+            font-weight: bold;
+            color: var(--neon-azul);
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #fff;
+            border: 2px solid var(--neon-verde);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 0 5px var(--neon-verde);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            background: rgba(57, 255, 20, 0.2);
+        }
+
+        .btn-secundario {
+            border-color: var(--neon-azul);
+            text-shadow: 0 0 5px var(--neon-azul);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+            background: transparent;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            width: auto;
+            display: inline-block;
+        }
+        
+        .btn-secundario:active {
+            background: rgba(0, 242, 254, 0.2);
+        }
+
+        .btn-danger {
+            border-color: var(--neon-rojo);
+            text-shadow: 0 0 5px var(--neon-rojo);
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            width: auto;
+            display: inline-block;
+            border-width: 1px;
+            border-radius: 4px;
+        }
+
+        .controles-exportar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .item-registro {
+            background: #222531;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--neon-azul);
+            position: relative;
+        }
+
+        .item-registro .header-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            margin-bottom: 5px;
+        }
+
+        .item-registro .detalles {
+            font-size: 0.9rem;
+        }
+
+        .item-registro .costos {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: var(--neon-verde);
+        }
+
+        .acciones-item {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .metricas-totales {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .metrica-bloque {
+            background: #222531;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metrica-bloque p {
+            font-size: 0.8rem;
+            color: var(--texto-secundario);
+        }
+
+        .metrica-bloque div {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Estilos de impresión optimizados para PDF */
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+                padding: 0;
+            }
+            .tarjeta, .btn, .controles-exportar, .acciones-item, .grupo-form {
+                display: none !important;
+            }
+            .tarjeta#seccion-reporte {
+                display: block !important;
+                background: #fff;
+                color: #000;
+                box-shadow: none;
+                border: none;
+                width: 100%;
+            }
+            h1, h2 {
+                color: #000 !important;
+                text-shadow: none !important;
+            }
+            .item-registro {
+                background: #fff;
+                color: #000;
+                border: 1px solid #ccc;
+                border-left: 4px solid #000;
+                page-break-inside: avoid;
+            }
+            .metrica-bloque {
+                background: #f0f0f0;
+                color: #000;
+                border: 1px solid #ccc;
+            }
+            .metrica-bloque div { color: #000; }
+            .item-registro .costos { color: #000; font-weight: bold; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <header>
+            <h1>Control de Producción Personal</h1>
+            <p style="color: var(--texto-secundario); font-size: 0.85rem;">Rendimiento Fijo: 48 caramelos por molde</p>
+        </header>
+
+        <div class="tarjeta resplandor-azul">
+            <h2>Ingreso de Producción</h2>
+            
+            <div class="grupo-form">
+                <label for="input-moldes">Cantidad de Moldes Envueltos</label>
+                <input type="number" id="input-moldes" min="1" placeholder="Ej. 5" autocomplete="off">
+            </div>
+
+            <label>Producción Simultánea Estimada:</label>
+            <div class="grid-simulacion">
+                <div class="col-simulacion">
+                    <p>Bolsas de 6<br><span id="sim-6">0 b (0)</span></p>
+                </div>
+                <div class="col-simulacion">
+                    <p>Bolsas de 7<br><span id="sim-7">0 b (0)</span></p>
+                </div>
+                <div class="col-simulacion">
+                    <p>Bolsas de 8<br><span id="sim-8">0 b (0)</span></p>
+                </div>
+            </div>
+
+            <div class="grupo-form" style="margin-top: 15px;">
+                <label for="select-tipo">Seleccionar Bolsa a Producir</label>
+                <select id="select-tipo">
+                    <option value="6">Bolsas de 6 Caramelos</option>
+                    <option value="7">Bolsas de 7 Caramelos</option>
+                    <option value="8">Bolsas de 8 Caramelos</option>
+                </select>
+            </div>
+
+            <button class="btn" id="btn-guardar">Registrar</button>
+        </div>
+
+        <div class="controles-exportar">
+            <button class="btn btn-secundario" id="btn-pdf" style="flex: 1;">Exportar PDF</button>
+            <button class="btn btn-secundario" id="btn-respaldo" style="flex: 1;">Respaldar Datos</button>
+        </div>
+
+        <div class="tarjeta resplandor-verde" id="seccion-reporte">
+            <h2>Historial y Rendimiento</h2>
+
+            <div class="metricas-totales">
+                <div class="metrica-bloque">
+                    <p>Inversión Moldes</p>
+                    <div id="total-costo-moldes">$0</div>
+                </div>
+                <div class="metrica-bloque">
+                    <p>Costo Paquetes</p>
+                    <div id="total-costo-paquetes">$0</div>
+                </div>
+            </div>
+
+            <div id="lista-registros">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN Y ESTADO DE LA APP ------------------------------------------------------------------------------------------------------------------------------
+        const CARAMELOS_POR_MOLDE = 48;
+        const COSTO_MOLDE = 1000;
+        const COSTO_PAQUETE = 300;
+
+        let db = {
+            registros: [],
+            ultimaActualizacion: new Date().toISOString()
+        };
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarLocalStorage();
+            verificarReiniciosCronologicos();
+            registrarEventos();
+            calcularSimulacion();
+            renderizar();
+        });
+
+        function registrarEventos() {
+            document.getElementById('input-moldes').addEventListener('input', calcularSimulacion);
+            document.getElementById('btn-guardar').addEventListener('click', guardarRegistro);
+            document.getElementById('btn-pdf').addEventListener('click', () => window.print());
+            document.getElementById('btn-respaldo').addEventListener('click', respaldarDatos);
+        }
+
+        // --- LÓGICA DE CÁLCULO ---
+        function calcularSimulacion() {
+            const moldes = parseInt(document.getElementById('input-moldes').value) || 0;
+            const totalCaramelos = moldes * CARAMELOS_POR_MOLDE;
+
+            [6, 7, 8].forEach(tipo => {
+                const bolsas = Math.floor(totalCaramelos / tipo);
+                const residuo = totalCaramelos % tipo;
+                document.getElementById(`sim-${tipo}`).innerText = `paquetes ${bolsas}  (quedan ${residuo})`;
+            });
+        }
+
+        // --- CRUDS & ALMACENAMIENTO ---
+        function guardarRegistro() {
+            const input = document.getElementById('input-moldes');
+            const moldes = parseInt(input.value);
+            const tipoBolsa = parseInt(document.getElementById('select-tipo').value);
+
+            if (!moldes || moldes <= 0) {
+                alert('Por favor, ingresa una cantidad válida de moldes.');
+                return;
+            }
+
+            const totalCaramelos = moldes * CARAMELOS_POR_MOLDE;
+            const bolsas = Math.floor(totalCaramelos / tipoBolsa);
+            const sobrantes = totalCaramelos % tipoBolsa;
+
+            const nuevoRegistro = {
+                id: Date.now(),
+                fecha: new Date().toISOString(),
+                moldes: moldes,
+                tipoBolsa: tipoBolsa,
+                bolsas: bolsas,
+                sobrantes: sobrantes,
+                costoMoldes: moldes * COSTO_MOLDE,
+                costoPaquetes: bolsas * COSTO_PAQUETE
+            };
+
+            db.registros.unshift(nuevoRegistro);
+            guardarLocalStorage();
+            renderizar();
+
+            // Limpieza e interfaz
+            input.value = '';
+            calcularSimulacion();
+        }
+
+        function eliminarRegistro(id) {
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                db.registros = db.registros.filter(r => r.id !== id);
+                guardarLocalStorage();
+                renderizar();
+            }
+        }
+
+        function editarRegistro(id) {
+            const registro = db.registros.find(r => r.id === id);
+            if (!registro) return;
+
+            const nuevosMoldes = prompt('Modificar cantidad de moldes:', registro.moldes);
+            if (nuevosMoldes === null) return; // Operación cancelada
+
+            const moldesValidos = parseInt(nuevosMoldes);
+            if (isNaN(moldesValidos) || moldesValidos <= 0) {
+                alert('Cantidad no válida.');
+                return;
+            }
+
+            const totalCaramelos = moldesValidos * CARAMELOS_POR_MOLDE;
+            
+            registro.moldes = moldesValidos;
+            registro.bolsas = Math.floor(totalCaramelos / registro.tipoBolsa);
+            registro.sobrantes = totalCaramelos % registro.tipoBolsa;
+            registro.costoMoldes = moldesValidos * COSTO_MOLDE;
+            registro.costoPaquetes = registro.bolsas * COSTO_PAQUETE;
+
+            guardarLocalStorage();
+            renderizar();
+        }
+
+        // --- SISTEMA DE REINICIOS AUTOMÁTICOS ---
+        function verificarReiniciosCronologicos() {
+            const ahora = new Date();
+            const ultimaVez = new Date(db.ultimaActualizacion);
+            
+            if (isNaN(ultimaVez.getTime())) return;
+
+            // 1. Reinicio Semanal (Todos los domingos)
+            // Si el día actual es domingo y la última actualización fue un día anterior
+            if (ahora.getDay() === 0 && ultimaVez.getDay() !== 0) {
+                db.registros = [];
+                console.log("Reinicio semanal ejecutado de manera automática.");
+            }
+
+            // 2. Reinicio Mensual (Al terminar el último día del mes / inicio del nuevo mes)
+            if (ahora.getMonth() !== ultimaVez.getMonth()) {
+                db.registros = [];
+                console.log("Reinicio mensual ejecutado de manera automática.");
+            }
+
+            db.ultimaActualizacion = ahora.toISOString();
+            guardarLocalStorage();
+        }
+
+        // --- RESPALDO (EXPORTACIÓN JSON MANUAL) ---
+        function respaldarDatos() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `respaldo_produccion_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // --- PERSISTENCIA LOCAL ---
+        function guardarLocalStorage() {
+            localStorage.setItem('control_caramelos_db', JSON.stringify(db));
+        }
+
+        function cargarLocalStorage() {
+            const datosGuardados = localStorage.getItem('control_caramelos_db');
+            if (datosGuardados) {
+                try {
+                    db = JSON.parse(datosGuardados);
+                } catch (e) {
+                    console.error("Error al leer almacenamiento local", e);
+                }
+            }
+        }
+
+        // --- RENDERIZADO EFICIENTE DEL DOM ---
+        function renderizar() {
+            const lista = document.getElementById('lista-registros');
+            lista.innerHTML = '';
+
+            let totalM = 0;
+            let totalP = 0;
+
+            if (db.registros.length === 0) {
+                lista.innerHTML = `<p style="color: var(--texto-secundario); text-align:center; padding: 20px;">No hay registros de producción activos.</p>`;
+            }
+
+            db.registros.forEach(r => {
+                totalM += r.costoMoldes;
+                totalP += r.costoPaquetes;
+
+                const fechaFormateada = new Date(r.fecha).toLocaleDateString('es-CO', {
+                    weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit'
+                });
+
+                const item = document.createElement('div');
+                item.className = 'item-registro';
+                item.innerHTML = `
+                    <div class="header-item">
+                        <span>${fechaFormateada}</span>
+                        <span>${r.moldes} Moldes utilizados</span>
+                    </div>
+                    <div class="detalles">
+                        Producido: <strong>${r.bolsas} bolsas</strong> de ${r.tipoBolsa} uds. 
+                        (Quedaron ${r.sobrantes} caramelos sueltos)
+                    </div>
+                    <div class="costos">
+                        | Empaque: $${r.costoPaquetes.toLocaleString()}
+                    </div>
+                    <div class="acciones-item">
+                        <button class="btn-danger" style="border-color: var(--neon-azul); text-shadow:0 0 2px var(--neon-azul);" onclick="editarRegistro(${r.id})">Editar</button>
+                        <button class="btn-danger" onclick="eliminarRegistro(${r.id})">Eliminar</button>
+                    </div>
+                `;
+                lista.appendChild(item);
+            });
+
+            document.getElementById('total-costo-moldes').innerText = `$${totalM.toLocaleString()}`;
+            document.getElementById('total-costo-paquetes').innerText = `$${totalP.toLocaleString()}`;
+        }
+    </script>
+</body>
+</html>
